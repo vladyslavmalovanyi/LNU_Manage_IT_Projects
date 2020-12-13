@@ -1,4 +1,5 @@
 ﻿using DAL.Moldels;
+using Domain;
 using Domain.Service;
 
 using Domain.ViewModel;
@@ -6,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -34,6 +36,45 @@ namespace LnuEventHub.Controllers
         {
             var items = await _EventServiceAsync.GetAll();
             return items;
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet("GetAllWithPagination")]
+        public async Task<IActionResult> GetAllWithPagination([FromQuery] PageParameters parameters)
+        {
+            var items = await _EventServiceAsync.GetPagination(parameters);
+            var metadata = new
+            {
+                items.TotalCount,
+                items.PageSize,
+                items.CurrentPage,
+                items.TotalPages,
+                items.HasNext,
+                items.HasPrevious
+            };
+             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            //log.LogInfo($"Returned {items.TotalCount} owners from database.");
+            return Ok(items);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("GetSearchWithPagination")]
+        public async Task<IActionResult> GetSearchWithPagination([FromQuery]SearchParameters search,  [FromQuery] PageParameters parameters)
+        {
+            var items = await _EventServiceAsync.GetSearch(search, parameters);
+            var metadata = new
+            {
+                items.TotalCount,
+                items.PageSize,
+                items.CurrentPage,
+                items.TotalPages,
+                items.HasNext,
+                items.HasPrevious
+            };
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            //log.LogInfo($"Returned {items.TotalCount} owners from database.");
+            return Ok(items);
         }
 
         //get by predicate example

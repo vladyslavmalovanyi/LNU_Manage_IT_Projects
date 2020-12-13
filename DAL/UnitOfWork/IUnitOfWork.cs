@@ -11,6 +11,7 @@ namespace DAL.UnitOfWork
     public interface IUnitOfWork : IDisposable
     {
         IRepositoryAsync<TEntity> GetRepositoryAsync<TEntity>() where TEntity : class;
+        IRepository<TEntity> GetRepository<TEntity>() where TEntity : class;
 
         ApiContext Context { get; }
         int Save();

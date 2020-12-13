@@ -24,13 +24,13 @@ namespace DAL.UnitOfWork
             _disposed = false;
         }
 
-        //public IRepository<TEntity> GetRepository<TEntity>() where TEntity : class
-        //{
-        //    if (_repositories == null) _repositories = new Dictionary<Type, object>();
-        //    var type = typeof(TEntity);
-        //    if (!_repositories.ContainsKey(type)) _repositories[type] = new Repository<TEntity>(this);
-        //    return (IRepository<TEntity>)_repositories[type];
-        //}
+        public IRepository<TEntity> GetRepository<TEntity>() where TEntity : class
+        {
+            if (_repositories == null) _repositories = new Dictionary<Type, object>();
+            var type = typeof(TEntity);
+            if (!_repositories.ContainsKey(type)) _repositories[type] = new Repository<TEntity>(this);
+            return (IRepository<TEntity>)_repositories[type];
+        }
 
         public IRepositoryAsync<TEntity> GetRepositoryAsync<TEntity>() where TEntity : class
         {
