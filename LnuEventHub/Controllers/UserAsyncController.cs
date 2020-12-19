@@ -12,8 +12,6 @@ using System.Threading.Tasks;
 
 namespace LnuEventHub.Controllers
 {
-    [Route("api/[controller]")]
-    //[Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class UserAsyncController : ControllerBase
     {
@@ -27,6 +25,7 @@ namespace LnuEventHub.Controllers
         //get all
         [Authorize]
         [HttpGet]
+        [Route("/")]
         public async Task<IEnumerable<UserViewModel>> GetAll()
         {
             var items = await _userServiceAsync.GetAll();
@@ -37,6 +36,7 @@ namespace LnuEventHub.Controllers
         //get all active by username
         [Authorize]
         [HttpGet("GetActiveByFirstName/{firstname}")]
+        [Route("/")]
         public async Task<IActionResult> GetActiveByFirstName(string firstname)
         {
             var items = await _userServiceAsync.Get(a =>  a.FirstName == firstname);
@@ -46,6 +46,7 @@ namespace LnuEventHub.Controllers
         //get one
         [Authorize]
         [HttpGet("{id}")]
+        [Route("/")]
         public async Task<IActionResult> GetById(int id)
         {
             var item = await _userServiceAsync.GetOne(id);
@@ -61,6 +62,7 @@ namespace LnuEventHub.Controllers
         //add
         [Authorize(Roles = "Administrator")]
         [HttpPost]
+        [Route("/")]
         public async Task<IActionResult> Create([FromBody] UserViewModel user)
         {
             if (user == null)
@@ -73,6 +75,7 @@ namespace LnuEventHub.Controllers
         //update
         [Authorize(Roles = "Administrator")]
         [HttpPut("{id}")]
+        [Route("/")]
         public async Task<IActionResult> Update(int id, [FromBody] UserViewModel user)
         {
             if (user == null || user.Id != id)
@@ -90,6 +93,7 @@ namespace LnuEventHub.Controllers
         //delete
         [Authorize(Roles = "Administrator")]
         [HttpDelete("{id}")]
+        [Route("/")]
         public async Task<IActionResult> Delete(int id)
         {
             int retVal = await _userServiceAsync.Remove(id);

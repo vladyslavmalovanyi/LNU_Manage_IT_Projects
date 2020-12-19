@@ -15,9 +15,6 @@ using System.Text;
 
 namespace LnuEventHub.Controllers
 {
-
-    [Route("api/[controller]")]
-    //[Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class TokenController : Controller
     {
@@ -32,6 +29,7 @@ namespace LnuEventHub.Controllers
 
         [AllowAnonymous]
         [HttpPost]
+        [Route("/")]
         public IActionResult Create([FromBody] LoginModel login)
         {
             IActionResult response = Unauthorized();
