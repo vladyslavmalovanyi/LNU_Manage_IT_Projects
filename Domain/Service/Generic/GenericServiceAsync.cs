@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DAL;
 using DAL.UnitOfWork;
+using Domain.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -38,6 +39,7 @@ namespace Domain.Service.Generic
                 .GetOne(predicate: x => x.Id == id);
             return _mapper.Map<Tv>(source: entity);
         }
+
 
         public virtual async Task<int> Add(Tv view)
         {

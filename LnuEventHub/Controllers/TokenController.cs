@@ -22,9 +22,10 @@ namespace LnuEventHub.Controllers
     public class TokenController : Controller
     {
         private IConfiguration _config;
-        private readonly UserServiceAsync<UserViewModel, User> _userService;
+        private readonly UserPassServiceAsync<UserPassViewModel, User> _userService;
 
-        public TokenController(IConfiguration config, UserServiceAsync<UserViewModel, User> userService)
+
+        public TokenController(IConfiguration config, UserPassServiceAsync<UserPassViewModel, User> userService)
         {
             _config = config;
             _userService = userService;
@@ -46,7 +47,7 @@ namespace LnuEventHub.Controllers
             return response;
         }
 
-        private string BuildToken(UserViewModel user)
+        private string BuildToken(UserPassViewModel user)
         {
 
             List<Claim> claims = new List<Claim>();
