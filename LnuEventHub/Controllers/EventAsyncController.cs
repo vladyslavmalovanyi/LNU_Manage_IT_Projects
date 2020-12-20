@@ -18,7 +18,6 @@ namespace LnuEventHub.Controllers
 {
 
     [Route("api/[controller]")]
-    //[Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class EventAsyncController : ControllerBase
     {
@@ -54,7 +53,6 @@ namespace LnuEventHub.Controllers
                 items.HasPrevious
             };
              Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
-            //log.LogInfo($"Returned {items.TotalCount} owners from database.");
             return Ok(items);
         }
 
@@ -77,18 +75,9 @@ namespace LnuEventHub.Controllers
             return Ok(items);
         }
 
-        //get by predicate example
-        //get all active by Eventname
-        [Authorize]
-        [HttpGet("GetActiveByName/{firstname}")]
-        public async Task<IActionResult> GetActiveByName(string name)
-        {
-            var items = await _EventServiceAsync.Get(a => a.Name == name);
-            return Ok(items);
-        }
 
 
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet("GetMyEvent/{firstname}")]
         public async Task<IActionResult> GetMyEvent()
         {
@@ -111,14 +100,21 @@ namespace LnuEventHub.Controllers
         }
 
         //add
-        [Authorize]
+        //  [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] EventViewModel Event)
         {
             if (Event == null)
-                return BadRequest();            
-            var id = await _EventServiceAsync.Add(Event);
-            return Created($"api/Event/{id}", id);  //HTTP201 Resource created
+                return BadRequest();
+            try { 
+                var id = await _EventServiceAsync.Add(Event);
+                 return Created($"api/Event/{id}", id); 
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        //HTTP201 Resource created
         }
 
         //update
@@ -126,16 +122,22 @@ namespace LnuEventHub.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] EventViewModel Event)
         {
-            if (Event == null || Event.Id != id || User.Identity.GetUserId<int>()!= Event.CreatorId)
+            if (Event == null || Event.Id != id)
                 return BadRequest();
-            
-            int retVal = await _EventServiceAsync.Update(Event);
-            if (retVal == 0)
-                return StatusCode(304);  //Not Modified
-            else if (retVal == -1)
-                return StatusCode(412, "DbUpdateConcurrencyException");  //412 Precondition Failed  - concurrency
-            else
-                return Accepted(Event);
+            try
+            {
+                int retVal = await _EventServiceAsync.Update(Event, User.Identity.GetUserId<int>());
+                if (retVal == 0)
+                    return StatusCode(304);  //Not Modified
+                else if (retVal == -1)
+                    return StatusCode(412, "DbUpdateConcurrencyException");  //412 Precondition Failed  - concurrency
+                else
+                    return Accepted(Event);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         //delete
@@ -143,16 +145,22 @@ namespace LnuEventHub.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id,  [FromBody] EventViewModel Event)
         {
-            if(User.Identity.GetUserId<int>() != Event.CreatorId)
-                return BadRequest();
-            int retVal = await _EventServiceAsync.Remove(id);
 
-            if (retVal == 0)
-                return NotFound();  //Not Found 404
-            else if (retVal == -1)
-                return StatusCode(412, "DbUpdateConcurrencyException");  //Precondition Failed  - concurrency
-            else
-                return NoContent();   	     //No Content 204
+
+            try
+            {
+                int retVal = await _EventServiceAsync.Remove(id, User.Identity.GetUserId<int>());
+                if (retVal == 0)
+                    return NotFound();  //Not Found 404
+                else if (retVal == -1)
+                    return StatusCode(412, "DbUpdateConcurrencyException");  //Precondition Failed  - concurrency
+                else
+                    return NoContent();
+            }
+           catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
     }

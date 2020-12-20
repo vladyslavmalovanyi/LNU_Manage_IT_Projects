@@ -12,7 +12,7 @@ namespace Domain.ViewModel
         public DateTime DateFinish { get; set; }
 
         public string Location { get; set; }
-        public string Dectription { get; set; }
+        public string Decription { get; set; }
 
         public string Organizer { get; set; }
 

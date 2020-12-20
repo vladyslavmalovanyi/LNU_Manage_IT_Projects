@@ -15,7 +15,6 @@ namespace Domain.Service
                                                 where Tv : EventViewModel
                                                 where Te : Event
     {
-        //DI must be implemented specific service as well beside GenericAsyncService constructor
         public EventServiceAsync(IUnitOfWork unitOfWork, IMapper mapper)
         {
             if (_unitOfWork == null)
@@ -36,7 +35,39 @@ namespace Domain.Service
                 entities.CurrentPage, 
                 entities.PageSize);
         }
+        public override async Task<int> Add(Tv view)
+        {
+            if (view.DateFinish < view.DateStart) // validation 
+            {
+                throw new Exception("Date finish < Date start");
+            }
+            var user = await _unitOfWork.GetRepositoryAsync<User>().GetOne(predicate: x => x.Id == view.CreatorId);
+            if (user == null)
+            {
+                throw new Exception("User is null");
+            }
+            return await base.Add(view);
+        }
+        public virtual async Task<int> Remove(int id, int idUser)
+        {
+            Te entity = await _unitOfWork.Context.Set<Te>().FindAsync(id);
+            if (entity != null && entity.CreatorId != idUser)
+            {
+                throw new Exception("You aren't creator of this event");
+            }
+            await _unitOfWork.GetRepositoryAsync<Te>().Delete(id);
+            return await _unitOfWork.SaveAsync();
+        }
 
+        public virtual async Task<int> Update(Tv view, int idUser)
+        {
+            Te entity = await _unitOfWork.Context.Set<Te>().FindAsync(view.Id);
+            if (entity != null && entity.CreatorId != idUser)
+            {
+                throw new Exception("You aren't creator of this event");
+            }
+            return await base.Update(view);
+        }
         public virtual async Task<PagedList<Tv>> GetSearch(SearchParameters searchParameters, PageParameters parameters)
         {
            
@@ -53,7 +84,5 @@ namespace Domain.Service
                 entities.CurrentPage,
                 entities.PageSize);
         }
-        //add here any custom service method or override genericasync service method
-        //...
     }
 }
