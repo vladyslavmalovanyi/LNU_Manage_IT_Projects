@@ -16,6 +16,9 @@ using System.Threading.Tasks;
 
 namespace LnuEventHub.Controllers
 {
+
+    [Route("api/[controller]")]
+    //[Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class EventAsyncController : ControllerBase
     {
@@ -29,7 +32,6 @@ namespace LnuEventHub.Controllers
         //get all
         [AllowAnonymous]
         [HttpGet]
-        [Route("/")]
         public async Task<IEnumerable<EventViewModel>> GetAll()
         {
             var items = await _EventServiceAsync.GetAll();
@@ -39,7 +41,6 @@ namespace LnuEventHub.Controllers
 
         [AllowAnonymous]
         [HttpGet("GetAllWithPagination")]
-        [Route("/")]
         public async Task<IActionResult> GetAllWithPagination([FromQuery] PageParameters parameters)
         {
             var items = await _EventServiceAsync.GetPagination(parameters);
@@ -59,7 +60,6 @@ namespace LnuEventHub.Controllers
 
         [AllowAnonymous]
         [HttpGet("GetSearchWithPagination")]
-        [Route("/")]
         public async Task<IActionResult> GetSearchWithPagination([FromQuery]SearchParameters search,  [FromQuery] PageParameters parameters)
         {
             var items = await _EventServiceAsync.GetSearch(search, parameters);
@@ -81,7 +81,6 @@ namespace LnuEventHub.Controllers
         //get all active by Eventname
         [Authorize]
         [HttpGet("GetActiveByName/{firstname}")]
-        [Route("/")]
         public async Task<IActionResult> GetActiveByName(string name)
         {
             var items = await _EventServiceAsync.Get(a => a.Name == name);
@@ -91,7 +90,6 @@ namespace LnuEventHub.Controllers
 
         [Authorize]
         [HttpGet("GetMyEvent/{firstname}")]
-        [Route("/")]
         public async Task<IActionResult> GetMyEvent()
         {
             var items = await _EventServiceAsync.Get(a => a.CreatorId == User.Identity.GetUserId<int>());
@@ -100,7 +98,6 @@ namespace LnuEventHub.Controllers
         //get one
         [Authorize]
         [HttpGet("{id}")]
-        [Route("/")]
         public async Task<IActionResult> GetById(int id)
         {
             var item = await _EventServiceAsync.GetOne(id);
@@ -116,7 +113,6 @@ namespace LnuEventHub.Controllers
         //add
         [Authorize]
         [HttpPost]
-        [Route("/")]
         public async Task<IActionResult> Create([FromBody] EventViewModel Event)
         {
             if (Event == null)
@@ -128,7 +124,6 @@ namespace LnuEventHub.Controllers
         //update
         [Authorize]
         [HttpPut("{id}")]
-        [Route("/")]
         public async Task<IActionResult> Update(int id, [FromBody] EventViewModel Event)
         {
             if (Event == null || Event.Id != id || User.Identity.GetUserId<int>()!= Event.CreatorId)
@@ -146,7 +141,6 @@ namespace LnuEventHub.Controllers
         //delete
         [Authorize(Roles = "Administrator")]
         [HttpDelete("{id}")]
-        [Route("/")]
         public async Task<IActionResult> Delete(int id,  [FromBody] EventViewModel Event)
         {
             if(User.Identity.GetUserId<int>() != Event.CreatorId)
