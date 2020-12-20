@@ -77,7 +77,7 @@ namespace LnuEventHub.Controllers
 
 
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet("GetMyEvent/{firstname}")]
         public async Task<IActionResult> GetMyEvent()
         {
@@ -85,7 +85,7 @@ namespace LnuEventHub.Controllers
             return Ok(items);
         }
         //get one
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -100,7 +100,7 @@ namespace LnuEventHub.Controllers
         }
 
         //add
-        //  [Authorize]
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] EventViewModel Event)
         {
@@ -141,7 +141,7 @@ namespace LnuEventHub.Controllers
         }
 
         //delete
-        [Authorize(Roles = "Administrator")]
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id,  [FromBody] EventViewModel Event)
         {
