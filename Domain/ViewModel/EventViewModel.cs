@@ -16,7 +16,7 @@ namespace Domain.ViewModel
 
         public string Organizer { get; set; }
 
-        public byte[] MainImage { get; set; }
+        public string MainImage { get; set; }
 
         public int CreatorId { get; set; }
 

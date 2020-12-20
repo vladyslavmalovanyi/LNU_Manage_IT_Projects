@@ -78,7 +78,7 @@ namespace LnuEventHub.Controllers
 
 
         [Authorize]
-        [HttpGet("GetMyEvent/{firstname}")]
+        [HttpGet("GetMyEvent")]
         public async Task<IActionResult> GetMyEvent()
         {
             var items = await _EventServiceAsync.Get(a => a.CreatorId == User.Identity.GetUserId<int>());

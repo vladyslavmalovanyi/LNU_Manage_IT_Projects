@@ -18,7 +18,7 @@ namespace DAL.Moldels
 
         public string Organizer { get; set; }
 
-        public byte[] MainImage { get; set; }
+        public string MainImage { get; set; }
 
         public int CreatorId { get; set; }
 
