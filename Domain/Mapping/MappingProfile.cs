@@ -18,11 +18,15 @@ namespace Domain.Mapping
 
 
             CreateMap<UserViewModel, User>()
-                .ForMember(dest => dest.DecryptedPassword, opts => opts.MapFrom(src => src.Password))
                 .ForMember(dest => dest.Roles, opts => opts.MapFrom(src => string.Join(";", src.Roles)));
             CreateMap<User, UserViewModel>()
-                .ForMember(dest => dest.Password, opts => opts.MapFrom(src => src.DecryptedPassword))
                 .ForMember(dest => dest.Roles, opts => opts.MapFrom(src => src.Roles.Split(";", StringSplitOptions.RemoveEmptyEntries)));
+
+            CreateMap<User, UserPassViewModel>()
+                .ForMember(dest => dest.Password, opts => opts.MapFrom(src => src.DecryptedPassword));
+            CreateMap<UserPassViewModel, User>()
+                 .ForMember(dest => dest.DecryptedPassword, opts => opts.MapFrom(src => src.Password));
+
             CreateMap<Event, EventViewModel>();
             CreateMap<EventViewModel, Event>();
             CreateMap<List<Event>, List<EventViewModel>>().Include<PagedList<Event>, PagedList<EventViewModel>>();
@@ -30,21 +34,6 @@ namespace Domain.Mapping
 
 
         }
-
-        //public class PagedListConverter<TSource, TDestination> : ITypeConverter<PagedList<Event>, PagedList<EventViewModel>> 
-        //{
-
-
-
-        //    public PagedList<EventViewModel> Convert(PagedList<Event> source, PagedList<EventViewModel> destination, ResolutionContext context)
-        //    {
-
-        //        List<EventViewModel> colection = map (List<Event>)source
-        //        return new PagedList<EventViewModel>(, source.Count, source.CurrentPage, source.PageSize);
-        //    }
-        //}
-        //}
-
     }
 }
 

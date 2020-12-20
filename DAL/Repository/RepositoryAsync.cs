@@ -41,9 +41,9 @@ namespace DAL.Repository
         {
             if (entity != null)
             {
-                //T entitytoUpdate = await _unitOfWork.Context.Set<T>().FindAsync(id);
-                //if (entitytoUpdate != null)
-                //	_unitOfWork.Context.Entry(entitytoUpdate).CurrentValues.SetValues(entity);
+                T entitytoUpdate = await _unitOfWork.Context.Set<T>().FindAsync(id);
+                if (entitytoUpdate != null)
+                	_unitOfWork.Context.Entry(entitytoUpdate).CurrentValues.SetValues(entity);
                 _unitOfWork.Context.Entry(entity).State = EntityState.Modified;
             }
         }

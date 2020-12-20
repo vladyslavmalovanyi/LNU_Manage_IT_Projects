@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 namespace LnuEventHub.Controllers
 {
     [Route("api/[controller]")]
-    //[Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class UserAsyncController : ControllerBase
     {
@@ -59,24 +58,29 @@ namespace LnuEventHub.Controllers
         }
 
         //add
-        [Authorize(Roles = "Administrator")]
+      //  [Authorize(Roles = "Administrator")]
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] UserViewModel user)
-        {
+        public async Task<IActionResult> Create([FromBody] UserPassViewModel user)
+        { 
             if (user == null)
                 return BadRequest();
-
-            var id = await _userServiceAsync.Add(user);
-            return Created($"api/User/{id}", id);  //HTTP201 Resource created
+            try
+            {
+                var id = await _userServiceAsync.Add(user);
+                return Created($"api/User/{id}", id);  //HTTP201 Resource created
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }           
         }
 
         //update
         [Authorize(Roles = "Administrator")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] UserViewModel user)
+        public async Task<IActionResult> Update(int id, [FromBody] UserPassViewModel user)
         {
-            if (user == null || user.Id != id)
-                return BadRequest();
+
 
             int retVal = await _userServiceAsync.Update(user);
             if (retVal == 0)
@@ -88,7 +92,7 @@ namespace LnuEventHub.Controllers
         }
 
         //delete
-        [Authorize(Roles = "Administrator")]
+       // [Authorize(Roles = "Administrator")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
