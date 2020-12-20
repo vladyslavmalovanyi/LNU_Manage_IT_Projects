@@ -40,7 +40,6 @@ namespace LnuEventHub
             response.StatusCode = (int)HttpStatusCode.InternalServerError;
             var result = JsonConvert.SerializeObject(new
             {
-                // customize as you need
                 error = new
                 {
                     message = exception.Message,

@@ -2,6 +2,7 @@
 using DAL.Moldels;
 using DAL.UnitOfWork;
 using Domain.Service.Generic;
+using Domain.Utilities;
 using Domain.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -23,28 +24,22 @@ namespace Domain.Service
             if (_mapper == null)
                 _mapper = mapper;
         }
-        public override async Task<int> Add(Tv view)
+        public async Task<int> Add(UserPassViewModel view)
         {
-            var users = await this.Get(x => x.Email == view.Email);
-            if (users != null && users.Any())
+            if (UserHelper.IsValidData(view))
             {
-                throw new Exception("User with the same email already exist");
+                var users = await this.Get(x => x.Email == view.Email);
+                if (users != null && users.Any())
+                {
+                    throw new Exception("User with the same email already exist");
+                }
+                var entity = _mapper.Map<Te>(source: view);
+                await _unitOfWork.GetRepositoryAsync<Te>().Insert(entity);
+                await _unitOfWork.SaveAsync();
+                return entity.Id;
             }
-            return await base.Add(view);
+            return -1;
+
         }
-        public async System.Threading.Tasks.Task<UserViewModel> AuthenticateAsync(LoginModel login)
-        {
-
-            var items = _mapper.Map <IEnumerable<UserPassViewModel>>(await _unitOfWork.GetRepositoryAsync<Te>().Get(x => x.Email == login.Email));
-           
-            var userView = items.SingleOrDefault();
-            if (userView != null && userView.Password == login.Password)
-            {
-                return userView as Tv;
-            }
-            return null;
-        }
-
-    }
-
+    }    
 }

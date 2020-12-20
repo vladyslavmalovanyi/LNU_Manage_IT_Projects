@@ -32,10 +32,9 @@ namespace LnuEventHub.Controllers
             return items;
         }
 
-        //get by predicate example
         //get all active by username
         [Authorize]
-        [HttpGet("GetActiveByFirstName/{firstname}")]
+        [HttpGet("GetByFirstName/{firstname}")]
         public async Task<IActionResult> GetActiveByFirstName(string firstname)
         {
             var items = await _userServiceAsync.Get(a =>  a.FirstName == firstname);
@@ -58,7 +57,6 @@ namespace LnuEventHub.Controllers
         }
 
         //add
-      //  [Authorize(Roles = "Administrator")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] UserPassViewModel user)
         { 
@@ -92,7 +90,7 @@ namespace LnuEventHub.Controllers
         }
 
         //delete
-       // [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
