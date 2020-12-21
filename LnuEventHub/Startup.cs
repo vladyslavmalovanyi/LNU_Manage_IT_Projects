@@ -139,13 +139,12 @@ namespace LnuEventHub
                 services.AddTransient<IUnitOfWork, UnitOfWork>();
 
                 //services injections
-                //services.AddTransient(typeof(AccountService<,>), typeof(AccountService<,>));
-                //services.AddTransient(typeof(UserService<,>), typeof(UserService<,>));
+
                 services.AddTransient(typeof(EventServiceAsync<,>), typeof(EventServiceAsync<,>));
                 services.AddTransient(typeof(UserServiceAsync<,>), typeof(UserServiceAsync<,>));
+                services.AddTransient(typeof(UserPassServiceAsync<,>), typeof(UserPassServiceAsync<,>));
                 //...add other services
                 //
-                //services.AddTransient(typeof(IService<,>), typeof(GenericService<,>));
                 services.AddTransient(typeof(IServiceAsync<,>), typeof(GenericServiceAsync<,>));
                 #endregion
 
